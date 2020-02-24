@@ -1,0 +1,315 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineScaleSets_aks_agentpool_27097749_vmss_name": {
+            "defaultValue": "aks-agentpool-27097749-vmss",
+            "type": "String"
+        },
+        "virtualNetworks_aks_vnet_27097749_externalid": {
+            "defaultValue": "/subscriptions/97751232-ce00-4496-8207-55c02913e3ec/resourceGroups/MC_Test_cluster-try2_eastus/providers/Microsoft.Network/virtualNetworks/aks-vnet-27097749",
+            "type": "String"
+        },
+        "loadBalancers_kubernetes_externalid": {
+            "defaultValue": "/subscriptions/97751232-ce00-4496-8207-55c02913e3ec/resourceGroups/mc_test_cluster-try2_eastus/providers/Microsoft.Network/loadBalancers/kubernetes",
+            "type": "String"
+        },
+        "disks_aks_agentpool_270977aks_agentpool_2709774OS__1_6b8efb9630aa47e8a5ca6ca4c54ada7e_externalid": {
+            "defaultValue": "/subscriptions/97751232-ce00-4496-8207-55c02913e3ec/resourceGroups/MC_TEST_CLUSTER-TRY2_EASTUS/providers/Microsoft.Compute/disks/aks-agentpool-270977aks-agentpool-2709774OS__1_6b8efb9630aa47e8a5ca6ca4c54ada7e",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "apiVersion": "2019-07-01",
+            "name": "[parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name')]",
+            "location": "eastus",
+            "tags": {
+                "aksEngineVersion": "aks-release-v0.45.0-1-aks",
+                "creationSource": "aks-aks-agentpool-27097749-vmss",
+                "orchestrator": "Kubernetes:1.14.8",
+                "poolName": "agentpool",
+                "resourceNameSuffix": "27097749"
+            },
+            "sku": {
+                "name": "Standard_B2s",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "properties": {
+                "singlePlacementGroup": true,
+                "upgradePolicy": {
+                    "mode": "Manual"
+                },
+                "virtualMachineProfile": {
+                    "osProfile": {
+                        "computerNamePrefix": "[parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name')]",
+                        "adminUsername": "azureuser",
+                        "linuxConfiguration": {
+                            "disablePasswordAuthentication": true,
+                            "ssh": {
+                                "publicKeys": [
+                                    {
+                                        "path": "/home/azureuser/.ssh/authorized_keys",
+                                        "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCqWgbsaEKB4gq7n6WM0oV2M0bw5xSCQ1rph5U9EL5PF9klfZPYlpFEybmRTGiTy9EVNxSmF6o3Jy0KeyaZrkClObCay6OSQa38qpmK8xVJnp6bjb0Is5d+0QvzZOUJuEgG12XBVlhcLTaFA20aFjqBN44AsQebsWTw/tM2wzJRE6+AEPAwfptPu7ewCW2BqApzLLp6I4F11Orei8wn3Hcs+6ULt8EXaVZftQ5V9VL6/jJ/Hiew211DTyWs+TjiNuEeqmwRZr4MEWIdMwsKHqnWIg34hIbXjIvHzoQ/wnLtLe9ulv0FgqH6Qm/m2/N0W/NYVAoykW9pMtOmYuAKuMyz0lQaMImGj8VkuJ+EV+JJ5kO+lE3d7HR5jDJt/peVQvHmYByuMvcLo/vgYUGh206D06O5sZA23gGpPmyZpX9ZZ1Yg467gEe+KCIvjE6p/++aS6D8+hAb11Z/7UR/5mqfxSsBGeWvoPIaQNSiPjmYQSBVZsH0gPFoaOWeT4AWd4Og42RrGMxH+9y378koNzmgc9r2xd/Ec32Ht8UQLjKHhu3fyM2KXUiGjzQdXocjmstrbM7CUK/nkVagAjtjv2X2uIKVUT7tBx/Mkn6e65602Poa9YhGPyqO6WO1Yo/SeC0E+D3eMzsaJxNh9FPMG7dho1hx8eGkV3Wnq9eIHWFX6Kw==\n"
+                                    }
+                                ]
+                            },
+                            "provisionVMAgent": true
+                        },
+                        "secrets": []
+                    },
+                    "storageProfile": {
+                        "osDisk": {
+                            "createOption": "FromImage",
+                            "caching": "ReadWrite",
+                            "managedDisk": {
+                                "storageAccountType": "Premium_LRS"
+                            },
+                            "diskSizeGB": 100
+                        },
+                        "imageReference": {
+                            "publisher": "microsoft-aks",
+                            "offer": "aks",
+                            "sku": "aks-ubuntu-1604-202001",
+                            "version": "2020.01.10"
+                        }
+                    },
+                    "networkProfile": {
+                        "networkInterfaceConfigurations": [
+                            {
+                                "name": "[parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name')]",
+                                "properties": {
+                                    "primary": true,
+                                    "enableAcceleratedNetworking": false,
+                                    "dnsSettings": {
+                                        "dnsServers": []
+                                    },
+                                    "enableIPForwarding": true,
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "ipconfig1",
+                                            "properties": {
+                                                "primary": true,
+                                                "subnet": {
+                                                    "id": "[concat(parameters('virtualNetworks_aks_vnet_27097749_externalid'), '/subnets/aks-subnet')]"
+                                                },
+                                                "privateIPAddressVersion": "IPv4",
+                                                "loadBalancerBackendAddressPools": [
+                                                    {
+                                                        "id": "[concat(parameters('loadBalancers_kubernetes_externalid'), '/backendAddressPools/aksOutboundBackendPool')]"
+                                                    },
+                                                    {
+                                                        "id": "[concat(parameters('loadBalancers_kubernetes_externalid'), '/backendAddressPools/kubernetes')]"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "extensionProfile": {
+                        "extensions": [
+                            {
+                                "name": "vmssCSE",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "publisher": "Microsoft.Azure.Extensions",
+                                    "type": "CustomScript",
+                                    "typeHandlerVersion": "2.0",
+                                    "settings": {}
+                                }
+                            },
+                            {
+                                "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '-AKSLinuxBilling')]",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "publisher": "Microsoft.AKS",
+                                    "type": "Compute.AKS.Linux.Billing",
+                                    "typeHandlerVersion": "1.0",
+                                    "settings": {}
+                                }
+                            }
+                        ]
+                    }
+                },
+                "overprovision": false,
+                "doNotRunExtensionsOnOverprovisionedVMs": false
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+            "apiVersion": "2019-07-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '/', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '-AKSLinuxBilling')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.AKS",
+                "type": "Compute.AKS.Linux.Billing",
+                "typeHandlerVersion": "1.0",
+                "settings": {}
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+            "apiVersion": "2019-07-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '/vmssCSE')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "settings": {}
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '/0')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'))]"
+            ],
+            "tags": {
+                "aksEngineVersion": "aks-release-v0.45.0-1-aks",
+                "creationSource": "aks-aks-agentpool-27097749-vmss",
+                "orchestrator": "Kubernetes:1.14.8",
+                "poolName": "agentpool",
+                "resourceNameSuffix": "27097749"
+            },
+            "sku": {
+                "name": "Standard_B2s",
+                "tier": "Standard"
+            },
+            "properties": {
+                "networkProfileConfiguration": {
+                    "networkInterfaceConfigurations": [
+                        {
+                            "name": "aks-agentpool-27097749-vmss",
+                            "properties": {
+                                "primary": true,
+                                "enableAcceleratedNetworking": false,
+                                "dnsSettings": {
+                                    "dnsServers": []
+                                },
+                                "enableIPForwarding": true,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "ipconfig1",
+                                        "properties": {
+                                            "primary": true,
+                                            "subnet": {
+                                                "id": "[concat(parameters('virtualNetworks_aks_vnet_27097749_externalid'), '/subnets/aks-subnet')]"
+                                            },
+                                            "privateIPAddressVersion": "IPv4",
+                                            "loadBalancerBackendAddressPools": [
+                                                {
+                                                    "id": "[concat(parameters('loadBalancers_kubernetes_externalid'), '/backendAddressPools/aksOutboundBackendPool')]"
+                                                },
+                                                {
+                                                    "id": "[concat(parameters('loadBalancers_kubernetes_externalid'), '/backendAddressPools/kubernetes')]"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "hardwareProfile": {},
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "microsoft-aks",
+                        "offer": "aks",
+                        "sku": "aks-ubuntu-1604-202001",
+                        "version": "2020.01.10"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "aks-agentpool-270977aks-agentpool-2709774OS__1_6b8efb9630aa47e8a5ca6ca4c54ada7e",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "[parameters('disks_aks_agentpool_270977aks_agentpool_2709774OS__1_6b8efb9630aa47e8a5ca6ca4c54ada7e_externalid')]"
+                        },
+                        "diskSizeGB": 100
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "aks-agentpool-27097749-vmss000000",
+                    "adminUsername": "azureuser",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/azureuser/.ssh/authorized_keys",
+                                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCqWgbsaEKB4gq7n6WM0oV2M0bw5xSCQ1rph5U9EL5PF9klfZPYlpFEybmRTGiTy9EVNxSmF6o3Jy0KeyaZrkClObCay6OSQa38qpmK8xVJnp6bjb0Is5d+0QvzZOUJuEgG12XBVlhcLTaFA20aFjqBN44AsQebsWTw/tM2wzJRE6+AEPAwfptPu7ewCW2BqApzLLp6I4F11Orei8wn3Hcs+6ULt8EXaVZftQ5V9VL6/jJ/Hiew211DTyWs+TjiNuEeqmwRZr4MEWIdMwsKHqnWIg34hIbXjIvHzoQ/wnLtLe9ulv0FgqH6Qm/m2/N0W/NYVAoykW9pMtOmYuAKuMyz0lQaMImGj8VkuJ+EV+JJ5kO+lE3d7HR5jDJt/peVQvHmYByuMvcLo/vgYUGh206D06O5sZA23gGpPmyZpX9ZZ1Yg467gEe+KCIvjE6p/++aS6D8+hAb11Z/7UR/5mqfxSsBGeWvoPIaQNSiPjmYQSBVZsH0gPFoaOWeT4AWd4Og42RrGMxH+9y378koNzmgc9r2xd/Ec32Ht8UQLjKHhu3fyM2KXUiGjzQdXocjmstrbM7CUK/nkVagAjtjv2X2uIKVUT7tBx/Mkn6e65602Poa9YhGPyqO6WO1Yo/SeC0E+D3eMzsaJxNh9FPMG7dho1hx8eGkV3Wnq9eIHWFX6Kw==\n"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[concat(resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '0'), '/networkInterfaces/aks-agentpool-27097749-vmss')]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines/extensions",
+            "apiVersion": "2019-07-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '/0/', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '-AKSLinuxBilling')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '0')]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'))]"
+            ],
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.AKS",
+                "type": "Compute.AKS.Linux.Billing",
+                "typeHandlerVersion": "1.0",
+                "settings": {}
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines/extensions",
+            "apiVersion": "2019-07-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '/0/vmssCSE')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'), '0')]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_aks_agentpool_27097749_vmss_name'))]"
+            ],
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "settings": {}
+            }
+        }
+    ]
+}
